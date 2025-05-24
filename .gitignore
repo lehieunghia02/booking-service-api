@@ -1,0 +1,39 @@
+# Thư mục
+node_modules/
+dist/
+build/
+.vscode/
+.idea/
+
+# Các file môi trường
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# Khác
+package-lock.json
+yarn.lock
+
+#Credentials
+./config/credentials.json
+./config/credentials.json.enc
+
+#Firebase
+./config/firebase.json
+
+#file google key
+./config/credentials.json
+
