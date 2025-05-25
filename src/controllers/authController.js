@@ -5,7 +5,7 @@ const { generateToken } = require('../middlewares/authMiddleware');
 
 const register = async (req, res) => {
   try {
-    const { first_name, last_name, email, password, phone } = req.body;
+    const { first_name, last_name, email, password, confirm_password, phone } = req.body;
   
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -14,8 +14,15 @@ const register = async (req, res) => {
         message: 'User already exists',
       });
     }
+  
+    if (password !== confirm_password) {
+      return res.status(400).json({
+        status: '400',
+        message: 'Password and confirm password do not match',
+      });
+    }
     
-    const { confirmPassword, ...userData } = req.body;
+
     const user = await User.create(userData);
     
     const token = generateToken(user._id);
@@ -36,8 +43,9 @@ const register = async (req, res) => {
         token
       }
     });
-  } catch (error) {
-    res.status(500).json({
+  }
+  catch(error){
+    return res.status(500).json({
       status: '500',
       message: error.message || 'Registration failed'
     });
