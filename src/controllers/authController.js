@@ -22,8 +22,14 @@ const register = async (req, res) => {
       });
     }
     
-
-    const user = await User.create(req.body);
+    const location = {
+      city: 'Ho Chi Minh',
+      country: 'Vietnam',
+      address: '99 Vu Tong Phan, Thu Duc City, Ho Chi Minh City',
+      zipCode: '700000',
+      coordinates: { latitude: 10.762622, longitude: 106.660172 },
+    }
+    const user = await User.create({...req.body, location});
     
     const token = generateToken(user._id);
     
