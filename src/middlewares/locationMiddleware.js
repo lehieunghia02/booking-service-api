@@ -1,6 +1,6 @@
 const { getLocationFromIP, updateUserAccessLocation } = require('../services/locationService');
 const requestIp = require('request-ip');
-const User = require('../models/user');
+const User = require('../models/User');
 
 /**
  * Middleware xử lý thông tin vị trí
