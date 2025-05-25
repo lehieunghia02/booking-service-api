@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 
 const userService = require('../services/userService');
 const { generateToken } = require('../middlewares/authMiddleware');
@@ -7,8 +7,7 @@ const { generateToken } = require('../middlewares/authMiddleware');
 const register = async (req, res) => {
   try {
     const { first_name, last_name, email, password, phone } = req.body;
-    
-    // Kiểm tra email đã tồn tại chưa
+  
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
@@ -102,9 +101,6 @@ const logout = async (req, res) => {
         message: 'User not found'
       })
     }
-
-    
-
   }catch(error){
     return res.status(500).json({
       status: '500',
@@ -134,7 +130,8 @@ const forgotPassword = async (req, res) => {
 module.exports = {
   register,
   login,
-  logout
+  logout, 
+  forgotPassword
 } 
 
 

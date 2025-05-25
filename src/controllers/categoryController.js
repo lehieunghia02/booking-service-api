@@ -1,3 +1,4 @@
+const Category = require('../models/Category');
 const categoryService = require('../services/categoryService');
 
 const getAllCategories = async(req, res) => {
@@ -32,7 +33,7 @@ const getCategoriesPopular = async(req, res) => {
     const limit = parseInt(req.query.limit) || 10;
   
      const skip = (page - 1) * limit;
-     const categories = await categoryService.getCategoriesPopular(skip, limit);
+     const categories = await categoryService.getCategoriesPopular2(skip, limit);
      const totalItems = categories.length;
      const totalPages = Math.ceil(totalItems / limit);
 
@@ -58,9 +59,32 @@ const getCategoriesPopular = async(req, res) => {
     res.status(500).json({status: 'error', message: error.message});
   }
 }
+const getCategoryById = async(req, res) => {
+  try {
+    const categoryId = req.params.id; 
+    console.log('categoryId', categoryId);
+    const category = await Category.findById(categoryId);
+    if(!category)
+    {
+      return res.status(404).json({
+        status: '404',
+        message: 'Category not found'
+      })
+    } 
+    res.status(200).json({
+      status: '200',
+      message: 'Category fetched successfully',
+      data: category
+    })
+  }catch(error)
+  {
+    res.status(500).json({status: 'error', message: error.message});
+  }
+}
 module.exports ={
   getAllCategories,
-  getCategoriesPopular
+  getCategoriesPopular,
+  getCategoryById
 }
 
 

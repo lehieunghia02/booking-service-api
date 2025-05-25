@@ -14,13 +14,25 @@ const categorySchema = new mongoose.Schema({
   image: {
     type: String
   },
+  view_count: {
+    type: Number,
+    default: 0
+  },
+  booking_count: {
+    type: Number,
+    default: 0
+  },
+  search_count: {
+    type: Number, 
+    default: 0
+  },
   is_popular: {
     type: Boolean,
     default: false
   },
   services: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Service'
+    ref: 'service'
   }],
   display_order: {
     type: Number,
@@ -36,7 +48,7 @@ const categorySchema = new mongoose.Schema({
   },
  }, { timestamps: true });
 
-// Tạo index
+
 categorySchema.index({ name: 'text' });
 categorySchema.index({ is_popular: 1 });
 categorySchema.index({ display_order: 1 });

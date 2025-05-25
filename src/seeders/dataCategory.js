@@ -98,7 +98,6 @@ const seedCategories = async () => {
   try {
     await Category.deleteMany();
     await Category.insertMany(categoryData);
-    console.log("Categories seeded successfully");
   } catch (error) {
     console.error("Error seeding categories:", error);
     process.exit(1);

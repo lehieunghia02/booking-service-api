@@ -1,11 +1,12 @@
-const User = require('../models/User');
+const User = require('../models/user');
+const userService = require('../services/userService');
 const forgotPassword = async (req, res) => {
 
 }
 const getInfoUser = async (req, res) => {
   try{
    
-    const user = await User.findById(req.user._id); 
+    const user = await userService.getInfoUser(req.user._id); 
     if(!user)
     {
       return res.status(400).json({
@@ -30,11 +31,11 @@ const getInfoUser = async (req, res) => {
   }
 }
 
-const updateUser = async (req, res) => {
+const updateInfoUser = async (req, res) => {
   const { _id} = req.user; 
   const {first_name, last_name} = req.body; 
   try {
-    const user = await User.findByIdAndUpdate(_id, {first_name, last_name}, {new: true});
+    const user = await userService.updateInfoUser(_id, {first_name, last_name});
     if(!user)
     {
       return res.status(400).json({
@@ -57,6 +58,7 @@ const updateUser = async (req, res) => {
 }
 module.exports = {
   getInfoUser,
-  forgotPassword
+  forgotPassword, 
+  updateInfoUser
 }
 
