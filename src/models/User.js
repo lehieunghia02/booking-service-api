@@ -59,9 +59,23 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user', 'staff', 'manager'],
     default: 'user',
   },
+  favorites: {
+    businesses: [{
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'business',
+    }],
+    services: [{
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'service',
+    }], 
+    categories: [{
+      type: mongoose.Schema.Types.ObjectId, 
+      ref: 'Category'
+    }]
+  },
   is_active: {
     type: Boolean,
-    default: false, 
+    default: false,
   }
 }, {timestamps: true});
 

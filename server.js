@@ -48,7 +48,13 @@ const data = {
   email: 'lehieunghia2402@gmail.com', 
   accessed: 'https://www.accessed.co/user/le_hieu_nghia',
 }
-
+app.cors(
+  {
+      origin: ['http://localhost:5713', 'https://booking-service-front-end.vercel.app/'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  }
+);
 app.get('/', (req, res) => {
   return res.json(data)
 }) 
