@@ -12,6 +12,9 @@ const userRoutes = require('./src/routes/userRoutes');
 const passport = require('./src/config/passport');
 const {seedCategories} = require('./src/seeders/dataCategory');
 const locationRouter = require('./src/routes/locationRouter');
+const businessRouter = require('./src/routes/businessRouter');
+const ratingRouter = require('./src/routes/ratingRouter');
+const { createLuminovaServices } = require('./src/seeders/dataService');
 dotenv.config();
 connectDB();
 
@@ -55,6 +58,13 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/test-email', testEmailRouter);
 app.use('/api/users', userRoutes);
 app.use('/api/location', locationRouter);
+app.use('/api/business', businessRouter);
+app.use('/api/ratings', ratingRouter);
+// seedCategories();
+// createLuminovaServices();
+
+
+
 
 const PORT = process.env.PORT || 8080;
 
