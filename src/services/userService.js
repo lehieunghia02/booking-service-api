@@ -11,6 +11,15 @@ class UserService {
       throw new Error('Failed to create user');
     }
   }
+  async getInforUser(userId){
+    try{
+      const user = await User.findById(userId);
+      const {password, ...userData} = user.toObject();
+      return userData;
+    }catch(error){
+      throw new Error('Failed to get user');
+    }
+  }
   async getUserById(userId){
     try
     {

@@ -6,7 +6,7 @@ const forgotPassword = async (req, res) => {
 const getInfoUser = async (req, res) => {
   try{
    
-    const user = await userService.getInfoUser(req.user._id); 
+    const user = await userService.getInforUser(req.user._id); 
     if(!user)
     {
       return res.status(400).json({
@@ -14,12 +14,11 @@ const getInfoUser = async (req, res) => {
         message: 'User not found'
       })
     }
-    const { password, ...userData } = user.toObject();
     return res.status(200).json({
       status: '200', 
       message: 'Get info user successfully',
       data: {
-        user: userData
+        user: user
       }
     })
   }catch(error)
