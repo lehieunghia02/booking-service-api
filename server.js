@@ -10,6 +10,8 @@ const categoryRoutes = require('./src/routes/categoryRouter');
 const testEmailRouter = require('./src/routes/testEmailRouter');
 const userRoutes = require('./src/routes/userRoutes');
 const passport = require('./src/config/passport');
+const {seedCategories} = require('./src/seeders/dataCategory');
+const locationRouter = require('./src/routes/locationRouter');
 dotenv.config();
 connectDB();
 
@@ -42,7 +44,7 @@ const data = {
   email: 'lehieunghia2402@gmail.com', 
   accessed: 'https://www.accessed.co/user/le_hieu_nghia',
 }
-// seedCategories();
+
 app.get('/', (req, res) => {
   return res.json(data)
 }) 
@@ -52,7 +54,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/test-email', testEmailRouter);
 app.use('/api/users', userRoutes);
-// swaggerDocs(app);
+app.use('/api/location', locationRouter);
 
 const PORT = process.env.PORT || 8080;
 

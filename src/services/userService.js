@@ -1,9 +1,8 @@
-const User = require("../models/User");
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 class UserService {
-  //create a new user
   async createUser(userData){
     try{
       const user = await User.create(userData);
@@ -12,7 +11,6 @@ class UserService {
       throw new Error('Failed to create user');
     }
   }
-  //get user by id 
   async getUserById(userId){
     try
     {
@@ -26,7 +24,6 @@ class UserService {
       throw new Error('Failed to get user');
     }
   }
-  //update user by id
   async updateUserById(userId, userData){
     try{
       const user = await User.findByIdAndUpdate(userId, userData, {new: true});
@@ -91,7 +88,22 @@ class UserService {
       throw new Error('Failed to send password reset email');
     }
   }
-  
+  async updateInfoUser(userId, userData)
+  {
+    try 
+    {
+      const user = await User.findByIdAndUpdate(userId, userData, {new: true});
+      if(!user)
+      {
+        throw new Error('User not found');
+      }
+      return user;
+    }
+    catch(error)
+    {
+      throw new Error('Failed to update user');
+    }
+  } 
 }
 
 module.exports = new UserService();

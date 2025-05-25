@@ -30,6 +30,30 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
   },
+  location: {
+    city: String,
+    country: String,
+    address: String,
+    zipCode: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    }
+  },
+  // Lịch sử địa chỉ truy cập
+  accessLocations: [{
+    city: String,
+    country: String,
+    coordinates: {
+      latitude: Number,
+      longitude: Number
+    },
+    ipAddress: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  }],
   role: {
     type: String,
     enum: ['admin', 'user', 'staff', 'manager'],
@@ -50,7 +74,7 @@ userSchema.pre('save', async function (next){
   next();
 });
 
-//Method to compare password 
+
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
