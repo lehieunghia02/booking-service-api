@@ -1,6 +1,4 @@
 const User = require('../models/user');
-
-const userService = require('../services/userService');
 const { generateToken } = require('../middlewares/authMiddleware');
 
 
