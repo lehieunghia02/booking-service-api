@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('../models/User');
 const userService = require('../services/userService');
 const forgotPassword = async (req, res) => {
 

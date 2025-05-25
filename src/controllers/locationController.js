@@ -1,5 +1,5 @@
 const locationService = require('../services/locationService');
-const User = require('../models/user');
+const User = require('../models/User');
 
 /**
  * Lấy thông tin vị trí từ IP
