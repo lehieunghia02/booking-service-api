@@ -27,8 +27,12 @@ connectDB();
 
 const app = express();
 //Middleware 
-app.use(cors()); 
-
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true
+}));
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -48,13 +52,7 @@ const data = {
   email: 'lehieunghia2402@gmail.com', 
   accessed: 'https://www.accessed.co/user/le_hieu_nghia',
 }
-app.cors(
-  {
-      origin: ['http://localhost:5713', 'https://booking-service-front-end.vercel.app/'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  }
-);
+
 app.get('/', (req, res) => {
   return res.json(data)
 }) 
