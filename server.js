@@ -15,6 +15,7 @@ const locationRouter = require('./src/routes/locationRouter');
 const businessRouter = require('./src/routes/businessRouter');
 const ratingRouter = require('./src/routes/ratingRouter');
 const { createLuminovaServices } = require('./src/seeders/dataService');
+const User = require('./src/models/User');
 dotenv.config();
 connectDB();
 
@@ -62,6 +63,7 @@ app.use('/api/business', businessRouter);
 app.use('/api/ratings', ratingRouter);
 // seedCategories();
 // createLuminovaServices();
+
 
 
 

@@ -23,7 +23,7 @@ const register = async (req, res) => {
     }
     
 
-    const user = await User.create(userData);
+    const user = await User.create(req.body);
     
     const token = generateToken(user._id);
     
