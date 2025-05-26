@@ -29,7 +29,18 @@ const getInfoUser = async (req, res) => {
     })
   }
 }
-
+const addFavoriteBusiness = async (req, res) => {
+  const { _id} = req.user; 
+  const {businessId} = req.body; 
+  try {
+    const user = await userService.addFavoriteBusiness(_id, businessId);
+  } catch (error) {
+    return res.status(500).json({
+      status: '500',
+      message: error.message || 'Add favorite business failed'
+    })
+  }
+}
 const updateInfoUser = async (req, res) => {
   const { _id} = req.user; 
   const {first_name, last_name} = req.body; 
@@ -58,6 +69,7 @@ const updateInfoUser = async (req, res) => {
 module.exports = {
   getInfoUser,
   forgotPassword, 
-  updateInfoUser
+  updateInfoUser,
+  addFavoriteBusiness
 }
 

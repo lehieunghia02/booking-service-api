@@ -1,6 +1,6 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { Business } = require("../models/Business");
 
 class UserService {
   async createUser(userData){
@@ -9,6 +9,41 @@ class UserService {
       return user;
     }catch(error){
       throw new Error('Failed to create user');
+    }
+  }
+  async addFavoriteBusiness(userId, businessId){
+    try {
+      const user = await User.findById(userId);
+      if(!user)
+      {
+        throw new Error('User not found');
+      }
+      const business = await Business.findById(businessId);
+      if(!business)
+      {
+        throw new Error('Business not found');
+      }
+      user.favorites.businesses.push(businessId);
+      await user.save();
+      return user;
+    }catch(error)
+    {
+      throw new Error('Failed to add favorite business');
+    }
+  }
+  async removeFavoriteBusiness(userId, businessId){
+    try {
+      const user = await User.findById(userId);
+      if(!user)
+      {
+        throw new Error('User not found');
+      }
+      user.favorites.businesses = user.favorites.businesses.filter(id => id.toString() !== businessId);
+      await user.save();
+      return user;
+    }catch(error)
+    {
+      throw new Error('Failed to remove favorite business');
     }
   }
   async getInforUser(userId){

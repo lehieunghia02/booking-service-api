@@ -7,11 +7,6 @@ const ratingSchema = new mongoose.Schema({
     ref: 'user',
     required: [true, 'User is required']
   },
-  business: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'business',
-    required: [true, 'Business is required']
-  },
   rating: {
     type: Number,
     required: [true, 'Rating is required'], 
@@ -36,10 +31,6 @@ const ratingSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  images: [{
-    type: String,
-    trim: true,
-  }],
   is_verified: {
     type: Boolean, 
     default: false

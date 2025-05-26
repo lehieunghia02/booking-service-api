@@ -5,17 +5,35 @@ class BusinessService {
     this.Business = Business;
   }
 
-  // Tìm kiếm salon phổ biến dựa trên nhiều yếu tố
+  async createBusiness(data){
+    try {
+      const business = await this.Business.create(data);
+      return business;
+    } catch (error) {
+      console.error('Failed to create business:', error);
+      throw new Error('Failed to create business');
+    }
+  }
+
+  // Get business by ID
+  async getBusinessById(id) {
+    try {
+      return await Business.findById(id);
+    } catch (error) {
+      console.error('Failed to get business by ID:', error);
+      throw new Error('Failed to get business details');
+    }
+  }
+
   async getPopularSalons(options = {}) {
     try {
-      const { page = 1, limit = 10, category, location } = options;
+      const { page = 1, limit = 10, category } = options;
       const skip = (page - 1) * limit;
 
-      // Lấy thống kê để chuẩn hóa các giá trị
       const stats = await Business.aggregate([
         { $match: { is_active: true, is_deleted: false } },
         {
-          $group: {
+          $group: { 
             _id: null,
             maxBookingCount: { $max: '$booking_count' },
             maxViewCount: { $max: '$view_count' },
@@ -26,7 +44,6 @@ class BusinessService {
         }
       ]);
 
-      // Lấy giá trị tối đa hoặc mặc định
       const maxStats = stats.length > 0 ? stats[0] : {
         maxBookingCount: 1,
         maxViewCount: 1,
@@ -34,28 +51,23 @@ class BusinessService {
         maxRatingCount: 1
       };
 
-      // Tạo match query
       const matchQuery = {
         is_active: true,
         is_deleted: false
       };
 
-      // Thêm điều kiện lọc theo category nếu có
       if (category) {
         matchQuery.categories = category;
       }
 
-      // Thêm điều kiện lọc theo location nếu có
       if (location && location.city) {
         matchQuery['address.city'] = location.city;
       }
 
-      // Tính toán độ phổ biến sử dụng MongoDB Aggregation
       const popularSalons = await Business.aggregate([
-        // Lọc các salon hoạt động
         { $match: matchQuery },
         
-        // Tính toán các chỉ số chuẩn hóa
+          // Tính toán các chỉ số chuẩn hóa
         {
           $addFields: {
             // Xử lý booking count
@@ -72,7 +84,6 @@ class BusinessService {
               }
             },
             
-            // Xử lý view count
             normalized_view: {
               $cond: {
                 if: { $gt: [maxStats.maxViewCount, 0] },
@@ -86,7 +97,6 @@ class BusinessService {
               }
             },
             
-            // Xử lý search count
             normalized_search: {
               $cond: {
                 if: { $gt: [maxStats.maxSearchCount, 0] },
@@ -100,7 +110,6 @@ class BusinessService {
               }
             },
             
-            // Xử lý số lượng rating (độ tin cậy)
             rating_reliability: {
               $cond: {
                 if: { $gt: [maxStats.maxRatingCount, 0] },
@@ -114,7 +123,6 @@ class BusinessService {
               }
             },
             
-            // Chuẩn hóa rating (đã ở thang 0-5)
             normalized_rating: {
               $cond: {
                 if: { $gt: ['$rating_summary.total_ratings', 0] },
@@ -123,7 +131,6 @@ class BusinessService {
               }
             },
             
-            // Bonus cho salon mới (dưới 30 ngày)
             days_since_creation: {
               $divide: [
                 { $subtract: [new Date(), '$createdAt'] },
@@ -139,14 +146,14 @@ class BusinessService {
                 0,
                 { 
                   $min: [
-                    0.2, // Tối đa 20% bonus
+                    0.2, 
                     { 
                       $multiply: [
                         0.2,
                         { 
                           $subtract: [
                             1,
-                            { $divide: ['$days_since_creation', 30] } // Giảm dần trong 30 ngày
+                            { $divide: ['$days_since_creation', 30] } 
                           ]
                         }
                       ]
@@ -156,36 +163,30 @@ class BusinessService {
               ]
             },
             
-            // Tính điểm popularity tổng hợp
             popularity_score: {
               $add: [
                 { $multiply: ['$normalized_booking', 0.3] },     // 30% cho booking
                 { $multiply: ['$normalized_search', 0.2] },      // 20% cho tìm kiếm
                 { $multiply: ['$normalized_view', 0.1] },        // 10% cho lượt xem
                 { $multiply: ['$normalized_rating', 0.25] },     // 25% cho rating trung bình
-                { $multiply: ['$rating_reliability', 0.15] }     // 15% cho số lượng rating
-                // time_bonus được thêm sau
+                { $multiply: ['$rating_reliability', 0.15] }     
               ]
             }
           }
         },
         {
           $addFields: {
-            // Thêm time bonus vào popularity score
             popularity_score: { 
               $add: ['$popularity_score', '$time_bonus']
             }
           }
         },
         
-        // Sắp xếp theo popularity score
         { $sort: { popularity_score: -1 } },
         
-        // Phân trang
         { $skip: skip },
         { $limit: parseInt(limit) },
         
-        // Chọn các trường để trả về
         {
           $project: {
             _id: 1,
@@ -204,7 +205,6 @@ class BusinessService {
         }
       ]);
       
-      // Đếm tổng số salon thỏa mãn điều kiện
       const total = await Business.countDocuments(matchQuery);
       
       return {
@@ -221,8 +221,62 @@ class BusinessService {
       throw new Error('Failed to fetch popular salons');
     }
   }
+  async getPopularSalonsByRatingCount(limit = 10)
+  {
+    try {
+    const popularBusinesses = await Business.aggregate([
+      {
+        $match: {
+          is_active: true,
+          is_deleted: false
+        }
+      },
+      {
+        $addFields: {
+          ratingCount: { $size: "$ratings" }
+        }
+      },
+      {
+        $sort: {
+          ratingCount: -1
+        }
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'categories',
+          foreignField: '_id',
+          as: 'categories'
+        }
+      },
+      {
+        $unwind: '$categories' 
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          address: 1,
+          images: 1,
+          logo: 1,
+          categories: 1,
+          rating_summary: 1,
+          ratingCount: 1,
+          categories: 1
+        }
+      },
+      {
+        $limit: limit
+      }
+    ]);
+    return popularBusinesses;
 
-  // Tăng view count khi người dùng xem salon
+    }catch(error){
+      console.error('Failed to fetch popular salons by rating count:', error);
+      throw new Error('Failed to fetch popular salons by rating count');
+    }
+  }
   async trackBusinessView(businessId) {
     try {
       await Business.findByIdAndUpdate(businessId, {
@@ -235,7 +289,6 @@ class BusinessService {
     }
   }
 
-  // Tăng search count khi salon xuất hiện trong kết quả tìm kiếm
   async incrementSearchCount(businessId) {
     try {
       await Business.findByIdAndUpdate(businessId, {

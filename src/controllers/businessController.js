@@ -1,6 +1,35 @@
 const businessService = require('../services/businessService');
-const businessController = require('../services/businessService');
 
+exports.createBusiness = async (req, res) => {
+  try {
+    const business = await businessService.createBusiness(req.body);
+    res.status(201).json({
+      success: true,
+      data: business
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
+
+exports.getPopularSalonsByRatingCount = async (req, res) => {
+  try {
+    const { limit } = req.query;
+    const popularSalons = await businessService.getPopularSalonsByRatingCount(limit);
+    res.status(200).json({
+      success: true,
+      data: popularSalons
+    });
+  } catch(error){
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+}
 
 exports.getPopularSalons = async (req, res) => {
   try 
@@ -24,6 +53,7 @@ exports.getPopularSalons = async (req, res) => {
     });
   }
 }
+
 exports.getSalonDetails = async (req, res) => {
   try {
     const { id } = req.params;

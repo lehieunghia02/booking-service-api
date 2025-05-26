@@ -10,7 +10,6 @@ class RatingService {
   }
   async createRating(ratingData) {
     try {
-      // Kiểm tra xem user đã từng booking tại business này chưa
       const hasBooking = await Booking.findOne({
         user: ratingData.user,
         business: ratingData.business,
