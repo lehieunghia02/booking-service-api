@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const { Business } = require("../models/Business");
+const Business = require("../models/Business");
 
 class UserService {
   async createUser(userData){
@@ -11,7 +11,27 @@ class UserService {
       throw new Error('Failed to create user');
     }
   }
-  async addFavoriteBusiness(userId, businessId){
+  async addFavoriteBusiness(user_id, business_id){
+    try {
+      const user = await User.findById(user_id);
+      if(!user)
+      {
+        throw new Error('User not found');
+      }
+      const business = await Business.findById(business_id);
+      if(!business)
+      {
+        throw new Error('Business not found');
+      }
+      user.favorites.businesses.push(business_id);
+      await user.save();
+      return user;
+    }catch(error)
+    {
+      return error;
+    }
+  }
+  async removeFavoriteBusiness(userId, businessId){
     try {
       const user = await User.findById(userId);
       if(!user)
@@ -23,24 +43,14 @@ class UserService {
       {
         throw new Error('Business not found');
       }
-      user.favorites.businesses.push(businessId);
-      await user.save();
-      return user;
-    }catch(error)
+    //element in array categories 
+    const index = user.favorites.businesses.indexOf(businessId);
+    if(index !== -1)
     {
-      throw new Error('Failed to add favorite business');
+      user.favorites.businesses.splice(index, 1);
     }
-  }
-  async removeFavoriteBusiness(userId, businessId){
-    try {
-      const user = await User.findById(userId);
-      if(!user)
-      {
-        throw new Error('User not found');
-      }
-      user.favorites.businesses = user.favorites.businesses.filter(id => id.toString() !== businessId);
-      await user.save();
-      return user;
+    await user.save();
+    return user;
     }catch(error)
     {
       throw new Error('Failed to remove favorite business');
