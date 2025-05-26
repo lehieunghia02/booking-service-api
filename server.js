@@ -17,7 +17,7 @@ const Location = require('./src/models/Location');
 const dataLocation = require('./src/seeders/dataLocation');
 const individualRouter = require('./src/routes/individualRouter');
 const searchRoutes = require('./src/routes/searchRoutes');
-
+const popularServiceRouter = require('./src/routes/popularServicecRouter');
 dotenv.config();
 connectDB();
 
@@ -65,7 +65,7 @@ app.use('/api/business', businessRouter);
 app.use('/api/ratings', ratingRouter);
 app.use('/api/individuals', individualRouter);
 app.use('/api/search', searchRoutes);
-
+app.use('/api/popular-services', popularServiceRouter)
 
 
 const PORT = process.env.PORT || 8080;

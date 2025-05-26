@@ -6,13 +6,13 @@ const searchController = {
   async unifiedSearch(req, res) {
     try {
       const {
-        query = '', // Search text
-        location = '', // Location filter
-        category, // Category filter
-        minPrice, // Min price for services
-        maxPrice, // Max price for services
-        rating, // Minimum rating filter
-        type, // Optional: filter by type (individual/business/service)
+        query = '', 
+        location = '', 
+        category, 
+        minPrice, 
+        maxPrice, 
+        rating, 
+        type, 
         limit = 10,
         page = 1
       } = req.query;
