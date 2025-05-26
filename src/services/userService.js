@@ -23,7 +23,7 @@ class UserService {
       {
         throw new Error('Business not found');
       }
-      user.favorites.businesses.push(business_id);
+      user.favorites.business.push(business_id);
       await user.save();
       return user;
     }catch(error)

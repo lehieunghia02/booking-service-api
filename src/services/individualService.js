@@ -42,10 +42,16 @@ const getIndividualPopularService = async (limit = 5) => {
           from: 'categories',
           localField: 'categories',
           foreignField: '_id',
-          as: 'categories'
+          as: 'categoriesInfo'
         }
       },
-      // Lookup business info
+      {
+        $unwind: {
+          path: '$categoriesInfo',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+    
       {
         $lookup: {
           from: 'businesses',
@@ -54,7 +60,6 @@ const getIndividualPopularService = async (limit = 5) => {
           as: 'businessInfo'
         }
       },
-      // Unwind business array to object (since it's a single business)
       {
         $unwind: {
           path: '$businessInfo',
@@ -72,19 +77,16 @@ const getIndividualPopularService = async (limit = 5) => {
       {
         $project: {
           _id: 1,
-          name: 1,
+          individual_name: "$name",
           description: 1,
-          categories: 1,
-          businessInfo: {
-            _id: 1,
-            name: 1,
-            address: 1
-          },
+          category_name: "$categoriesInfo.name",
+          business_name: "$businessInfo.name" || "",
+          business_address: "$businessInfo.address" || "",
+        
+
           avg_rating: 1,
-          ratingCount: 1,
-          ratings: {
-            $slice: ["$ratings", 3] // Get only last 3 ratings
-          }
+          total_rating: 1,
+          avatar_url: "$avatar",
         }
       },
       // Limit results
