@@ -67,6 +67,10 @@ const individualSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 const Individual = mongoose.model('Individual', individualSchema);
+individualSchema.index({ name: 'text', description: 'text', email: 'text' });
+individualSchema.index({ avg_rating: -1, total_rating: -1 });
+individualSchema.index({ is_active: 1 });
+
 
 module.exports = Individual;
     
