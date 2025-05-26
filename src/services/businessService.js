@@ -249,9 +249,41 @@ class BusinessService {
           as: 'categories'
         }
       },
+      //count total rating
+      {
+        $addFields: {
+          total_rating: { $size: "$ratings" }
+        }
+      },
+      //count avg rating 
+      {
+       $addFields: {
+  ratingCount: { $size: "$ratings" },
+  avg_rating: {
+    $cond: {
+      if: { $gt: [{ $size: "$ratings" }, 0] },
+      then: {
+        $round: [
+          {
+            $divide: [
+              { $sum: "$ratings.rating" },
+              { $size: "$ratings" }
+            ]
+          },
+          1 // số chữ số thập phân
+        ]
+      },
+      else: 0
+    }
+  }
+}
+
+      },
       {
         $unwind: '$categories' 
       },
+      //total rating
+     
       {
         $project: {
           _id: 1,
@@ -263,7 +295,9 @@ class BusinessService {
           categories: 1,
           rating_summary: 1,
           ratingCount: 1,
-          categories: 1
+          categories: 1,
+          total_rating: 1,
+          avg_rating: 1
         }
       },
       {

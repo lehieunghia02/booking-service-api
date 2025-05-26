@@ -85,6 +85,14 @@ const businessSchema = new mongoose.Schema({
       default: Date.now,
     },
   }],
+  total_rating: {
+    type: Number,
+    default: 0
+  },
+  avg_rating:{
+    type: Number,
+    default: 0
+  },
   is_active: {
     type: Boolean,
     default: true
