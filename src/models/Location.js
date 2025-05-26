@@ -12,28 +12,19 @@ const locationSchema = new mongoose.Schema({
   },
   country: {
     type: String,
-    required: true
+    default: ""
   }, 
   country_code: {
     type: String,
-    required: true
-  },
-  coordinates: {
-    lat: Number,
-    lng: Number
-  },
-  is_popular: {
-    type: Boolean,
-    default: false
+    default: ""
   },
   timezone: {
     type: String,
-  },
-  locale_code: {
-    type: String,
+    default: ""
   },
   currency: {
     type: String,
+    default: ""
   }
 },
 {
@@ -42,8 +33,6 @@ const locationSchema = new mongoose.Schema({
 
 //Indexing 
 locationSchema.index({city: 'text', region: 'text', country: 'text'});
-locationSchema.index({ is_popular: 1 });
-locationSchema.index({ coordinates: '2dsphere' }, { sparse: true });
 
 const Location = mongoose.model('Location', locationSchema);
 

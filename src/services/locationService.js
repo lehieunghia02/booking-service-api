@@ -8,8 +8,7 @@ const geoip = require('geoip-lite');
 exports.getLocationFromIP = (ipAddress) => {
   try {
     // Loại bỏ IPv6 prefix nếu có
-
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const ip = ipAddress.replace(/^::ffff:/, '');
 
     // Thay thế IP localhost với IP thật cho mục đích testing
     const lookupIp = ip === '127.0.0.1' || ip === '::1' ? '8.8.8.8' : ip;

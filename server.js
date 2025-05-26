@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors'); 
+const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const connectDB = require('./src/config/database');;
@@ -7,18 +7,16 @@ const authRoutes= require('./src/routes/authRoutes');
 const bookingRoutes = require('./src/routes/bookingRoutes');
 const serviceRoutes = require('./src/routes/serviceRoutes');
 const categoryRoutes = require('./src/routes/categoryRouter');
-const testEmailRouter = require('./src/routes/testEmailRouter');
 const userRoutes = require('./src/routes/userRoutes');
 const passport = require('./src/config/passport');
-const {seedCategories} = require('./src/seeders/dataCategory');
 const locationRouter = require('./src/routes/locationRouter');
 const businessRouter = require('./src/routes/businessRouter');
 const ratingRouter = require('./src/routes/ratingRouter');
-const { createLuminovaServices } = require('./src/seeders/dataService');
-const User = require('./src/models/User');
+const {seedService} = require('./src/seeders/dataService');
+const Location = require('./src/models/Location');
+const dataLocation = require('./src/seeders/dataLocation');
 dotenv.config();
 connectDB();
-
 
 
 
@@ -48,9 +46,6 @@ app.get('/api/health', (req, res) => {
 
 const data = {
   fullName: 'Nghia Le', 
-  role: 'NodeJS Backend Developer',
-  email: 'lehieunghia2402@gmail.com', 
-  accessed: 'https://www.accessed.co/user/le_hieu_nghia',
 }
 
 app.get('/', (req, res) => {
@@ -60,14 +55,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/categories', categoryRoutes);
-app.use('/api/test-email', testEmailRouter);
 app.use('/api/users', userRoutes);
 app.use('/api/location', locationRouter);
 app.use('/api/business', businessRouter);
 app.use('/api/ratings', ratingRouter);
-// seedCategories();
-// createLuminovaServices();
-
 
 
 
