@@ -5,7 +5,7 @@ class BusinessService {
     this.Business = Business;
   }
 
-  async createBusiness(data){
+  async createBusiness(data) {
     try {
       const business = await this.Business.create(data);
       return business;
@@ -33,7 +33,7 @@ class BusinessService {
       const stats = await Business.aggregate([
         { $match: { is_active: true, is_deleted: false } },
         {
-          $group: { 
+          $group: {
             _id: null,
             maxBookingCount: { $max: '$booking_count' },
             maxViewCount: { $max: '$view_count' },
@@ -66,15 +66,15 @@ class BusinessService {
 
       const popularSalons = await Business.aggregate([
         { $match: matchQuery },
-        
-          // Tính toán các chỉ số chuẩn hóa
+
+        // Tính toán các chỉ số chuẩn hóa
         {
           $addFields: {
             // Xử lý booking count
             normalized_booking: {
               $cond: {
                 if: { $gt: [maxStats.maxBookingCount, 0] },
-                then: { 
+                then: {
                   $max: [
                     0.05, // Floor để không bị 0
                     { $divide: ['$booking_count', maxStats.maxBookingCount] }
@@ -83,11 +83,11 @@ class BusinessService {
                 else: 0.05
               }
             },
-            
+
             normalized_view: {
               $cond: {
                 if: { $gt: [maxStats.maxViewCount, 0] },
-                then: { 
+                then: {
                   $max: [
                     0.05,
                     { $divide: ['$view_count', maxStats.maxViewCount] }
@@ -96,11 +96,11 @@ class BusinessService {
                 else: 0.05
               }
             },
-            
+
             normalized_search: {
               $cond: {
                 if: { $gt: [maxStats.maxSearchCount, 0] },
-                then: { 
+                then: {
                   $max: [
                     0.05,
                     { $divide: ['$search_count', maxStats.maxSearchCount] }
@@ -109,11 +109,11 @@ class BusinessService {
                 else: 0.05
               }
             },
-            
+
             rating_reliability: {
               $cond: {
                 if: { $gt: [maxStats.maxRatingCount, 0] },
-                then: { 
+                then: {
                   $max: [
                     0.05,
                     { $divide: ['$rating_summary.total_ratings', maxStats.maxRatingCount] }
@@ -122,7 +122,7 @@ class BusinessService {
                 else: 0.05
               }
             },
-            
+
             normalized_rating: {
               $cond: {
                 if: { $gt: ['$rating_summary.total_ratings', 0] },
@@ -130,7 +130,7 @@ class BusinessService {
                 else: 0.6 // Mặc định 3/5 sao nếu chưa có đánh giá
               }
             },
-            
+
             days_since_creation: {
               $divide: [
                 { $subtract: [new Date(), '$createdAt'] },
@@ -144,16 +144,16 @@ class BusinessService {
             time_bonus: {
               $max: [
                 0,
-                { 
+                {
                   $min: [
-                    0.2, 
-                    { 
+                    0.2,
+                    {
                       $multiply: [
                         0.2,
-                        { 
+                        {
                           $subtract: [
                             1,
-                            { $divide: ['$days_since_creation', 30] } 
+                            { $divide: ['$days_since_creation', 30] }
                           ]
                         }
                       ]
@@ -162,31 +162,31 @@ class BusinessService {
                 }
               ]
             },
-            
+
             popularity_score: {
               $add: [
                 { $multiply: ['$normalized_booking', 0.3] },     // 30% cho booking
                 { $multiply: ['$normalized_search', 0.2] },      // 20% cho tìm kiếm
                 { $multiply: ['$normalized_view', 0.1] },        // 10% cho lượt xem
                 { $multiply: ['$normalized_rating', 0.25] },     // 25% cho rating trung bình
-                { $multiply: ['$rating_reliability', 0.15] }     
+                { $multiply: ['$rating_reliability', 0.15] }
               ]
             }
           }
         },
         {
           $addFields: {
-            popularity_score: { 
+            popularity_score: {
               $add: ['$popularity_score', '$time_bonus']
             }
           }
         },
-        
+
         { $sort: { popularity_score: -1 } },
-        
+
         { $skip: skip },
         { $limit: parseInt(limit) },
-        
+
         {
           $project: {
             _id: 1,
@@ -204,9 +204,9 @@ class BusinessService {
           }
         }
       ]);
-      
+
       const total = await Business.countDocuments(matchQuery);
-      
+
       return {
         salons: popularSalons,
         pagination: {
@@ -221,90 +221,90 @@ class BusinessService {
       throw new Error('Failed to fetch popular salons');
     }
   }
-  async getPopularSalonsByRatingCount(limit = 10)
-  {
+  async getPopularSalonsByRatingCount(limit = 10) {
     try {
-    const popularBusinesses = await Business.aggregate([
-      {
-        $match: {
-          is_active: true,
-          is_deleted: false
-        }
-      },
-      {
-        $addFields: {
-          ratingCount: { $size: "$ratings" }
-        }
-      },
-      {
-        $sort: {
-          ratingCount: -1
-        }
-      },
-      {
-        $lookup: {
-          from: 'categories',
-          localField: 'categories',
-          foreignField: '_id',
-          as: 'categories'
-        }
-      },
-      //count total rating
-      {
-        $addFields: {
-          total_rating: { $size: "$ratings" }
-        }
-      },
-      //count avg rating 
-      {
-       $addFields: {
-        ratingCount: { $size: "$ratings" },
-        avg_rating: {
-        $cond: {
-          if: { $gt: [{ $size: "$ratings" }, 0] },
-          then: {
-            $round: [
-              {
-                $divide: [
-                  { $sum: "$ratings.rating" },
-                  { $size: "$ratings" }
-                ]
-              },
-              1
-            ]
-          },
-          else: 0
-        }
-  }
-}
+      const popularBusinesses = await Business.aggregate([
+        {
+          $match: {
+            is_active: true,
+            is_deleted: false
+          }
+        },
+        {
+          $addFields: {
+            ratingCount: { $size: "$ratings" }
+          }
+        },
+        {
+          $sort: {
+            ratingCount: -1
+          }
+        },
+        {
+          $lookup: {
+            from: 'categories',
+            localField: 'categories',
+            foreignField: '_id',
+            as: 'categories'
+          }, 
+        },  // Lookup business details      
+        
+        //count total rating
+        {
+          $addFields: {
+            total_rating: { $size: "$ratings" }
+          }
+        },
+        //count avg rating 
+        {
+          $addFields: {
+            ratingCount: { $size: "$ratings" },
+            avg_rating: {
+              $cond: {
+                if: { $gt: [{ $size: "$ratings" }, 0] },
+                then: {
+                  $round: [
+                    {
+                      $divide: [
+                        { $sum: "$ratings.rating" },
+                        { $size: "$ratings" }
+                      ]
+                    },
+                    1
+                  ]
+                },
+                else: 0
+              }
+            }
+          }
 
-      },
-      {
-        $unwind: '$categories' 
-      },     
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          description: 1,
-          address: 1,
-          images: 1,
-          logo: 1,
-          categories: 1,
-          rating_summary: 1,
-          ratingCount: 1,
-          categories: 1,
-          total_rating: 1,
-          avg_rating: 1
+        },
+        {
+          $unwind: '$categories'
+        },
+        {
+          $project: {
+            _id: 1,
+            name: 1,
+            description: 1,
+            address: 1,
+            images: 1,
+            logo: 1,
+            categories: 1,
+            rating_summary: 1,
+            ratingCount: 1,
+            categories: 1,
+            total_rating: 1,
+            avg_rating: 1
+          }
+        },
+        {
+          $limit: limit
         }
-      },
-      {
-        $limit: limit
-      }
-    ]);
-    return popularBusinesses;
+      ]);
+      return popularBusinesses;
 
-    }catch(error){
+    } catch (error) {
       console.error('Failed to fetch popular salons by rating count:', error);
       throw new Error('Failed to fetch popular salons by rating count');
     }

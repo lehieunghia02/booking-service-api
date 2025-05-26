@@ -6,6 +6,16 @@ const individualSchema = new mongoose.Schema({
     required: [true, 'Name is required'],
     trim: true,
   },
+  avatar: {
+    type: String, 
+  },
+  email: {
+    type: String,
+    required: [true, 'Email is required'],
+    unique: true,
+    trim: true,
+  },
+  
   ratings:[
   {
     user:{
@@ -19,6 +29,7 @@ const individualSchema = new mongoose.Schema({
       min: [1, 'Rating must be at least 1'],
       max: [5, 'Rating must be at most 5']
     },
+   
     comment: {
       type: String,
     },
@@ -35,8 +46,8 @@ const individualSchema = new mongoose.Schema({
   },
   business: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Business', 
-  }, 
+    ref: 'business',
+  },
   description: {
     type: String,
     required: [true, 'Description is required']

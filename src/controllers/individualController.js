@@ -4,8 +4,15 @@ const { getIndividualPopularService } = require('../services/individualService')
 const getIndividualPopular = async (req, res) => {
   try {
     const individuals = await getIndividualPopularService();
+    if(!individuals){
+      return res.status(404).json({
+        status: '404',
+        message: 'No individuals found'
+      });
+    }
     res.status(200).json({
-      status: 'success',
+      status: '200',
+      message: 'Individuals fetched successfully',
       data: individuals 
     });
   } catch (error) {

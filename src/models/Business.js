@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Rating = require('./rating');
 const businessSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -38,16 +37,6 @@ const businessSchema = new mongoose.Schema({
     required: true,
     default: ""
   },
-  // business_hours: {
-  //   monday: { open: String, close: String },
-  //   tuesday: { open: String, close: String },
-  //   wednesday: { open: String, close: String },
-  //   thursday: { open: String, close: String },
-  //   friday: { open: String, close: String },
-  //   saturday: { open: String, close: String },
-  //   sunday: { open: String, close: String }
-  // },
-  
   // rating_summary: {
   //   average_rating: {
   //     type: Number,
@@ -64,7 +53,6 @@ const businessSchema = new mongoose.Schema({
   //     default: 0 
   //   }
   // },
-  
   ratings: [{
     user: {
       type: mongoose.Schema.Types.ObjectId,

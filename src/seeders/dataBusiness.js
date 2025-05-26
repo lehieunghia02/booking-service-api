@@ -7,7 +7,7 @@
 // /**
 //  * Tạo dữ liệu mẫu cho các salon
 //  */
-// const createBusinesses = async () => {
+// const createBusiness = async () => {
 //   try {
 //     // Lấy dữ liệu từ các collection khác để tham chiếu
 //     const categories = await Category.find({});
