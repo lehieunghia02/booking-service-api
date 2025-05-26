@@ -15,6 +15,7 @@ const ratingRouter = require('./src/routes/ratingRouter');
 const {seedService} = require('./src/seeders/dataService');
 const Location = require('./src/models/Location');
 const dataLocation = require('./src/seeders/dataLocation');
+const individualRouter = require('./src/routes/individualRouter');
 dotenv.config();
 connectDB();
 
@@ -59,7 +60,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/location', locationRouter);
 app.use('/api/business', businessRouter);
 app.use('/api/ratings', ratingRouter);
-
+app.use('/api/individuals', individualRouter);
 
 
 
