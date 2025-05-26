@@ -23,11 +23,11 @@ const serviceSchema = new mongoose.Schema({
   image: {
     type: String,
   },
-  category: {
+  category: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
     required: [true, 'Category is required']
-  },
+  }],
   isActive: {
     type: Boolean,
     default: true

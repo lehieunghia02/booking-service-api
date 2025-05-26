@@ -1,10 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const {getServicePopular} = require('../controllers/serviceController');
 
-router.get('/', (req, res) => {
-  
-  res.status(200).json([]);
-});
+router.get('/popular', getServicePopular);
 
 
 router.get('/:id', (req, res) => {
