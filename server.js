@@ -16,6 +16,8 @@ const {seedService} = require('./src/seeders/dataService');
 const Location = require('./src/models/Location');
 const dataLocation = require('./src/seeders/dataLocation');
 const individualRouter = require('./src/routes/individualRouter');
+const searchRoutes = require('./src/routes/searchRoutes');
+
 dotenv.config();
 connectDB();
 
@@ -37,6 +39,7 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(passport.initialize());
+
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({
@@ -61,6 +64,7 @@ app.use('/api/location', locationRouter);
 app.use('/api/business', businessRouter);
 app.use('/api/ratings', ratingRouter);
 app.use('/api/individuals', individualRouter);
+app.use('/api/search', searchRoutes);
 
 
 

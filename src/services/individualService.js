@@ -82,8 +82,6 @@ const getIndividualPopularService = async (limit = 5) => {
           category_name: "$categoriesInfo.name",
           business_name: "$businessInfo.name" || "",
           business_address: "$businessInfo.address" || "",
-        
-
           avg_rating: 1,
           total_rating: 1,
           avatar_url: "$avatar",
